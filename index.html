@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calc 95LPA | Scientific + Calculus | Trupti</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Poppins:wght@400;600&display=swap');
+        body {
+            background: #0a1f0a; color: #f0fff0; font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 20px; min-height: 100vh;
+            background: radial-gradient(circle at 20% 80%, #1a4d1a 0%, #0a1f0a 50%),
+                        radial-gradient(circle at 80% 20%, #2d5a2d 0%, #0a1f0a 50%);
+        }
+   .glass {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 24px; padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 50, 0, 0.5);
+            max-width: 600px; margin: 20px auto;
+        }
+        h1 {
+            text-align: center; font-family: 'Space Mono', monospace; font-size: 32px;
+            background: linear-gradient(90deg, #4caf50, #a5d6a7, #ffffff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(76,175,80,0.4);
+        }
+      .neon-green { color: #4caf50; text-shadow: 0 0 10px #4caf50; }
+      .display {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 16px; padding: 20px; margin: 20px 0; min-height: 80px;
+            font-family: 'Space Mono', monospace; font-size: 18px; word-wrap: break-word;
+      }
+      .display input {
+            background: transparent; border: none; color: #a5d6a7;
+            width: 100%; font-family: 'Space Mono', monospace; font-size: 20px;
+            outline: none; text-align: right;
+      }
+      .display .result {
+            color: #ffffff; font-size: 28px; font-weight: 700; text-align: right;
+            margin-top: 10px; min-height: 35px;
+      }
+      .btn-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 15px 0;
+      }
+      .btn {
+            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(76, 175, 80, 0.2);
+            color: #f0fff0; padding: 16px 8px; border-radius: 14px; font-family: 'Space Mono';
+            cursor: pointer; transition: all 0.2s ease; font-weight: 700; font-size: 15px;
+      }
+      .btn:hover {
+            background: rgba(76, 175, 80, 0.3); transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); border-color: #4caf50;
+      }
+      .btn-op { background: rgba(76, 175, 80, 0.15); color: #a5d6a7; }
+      .btn-func { background: rgba(255, 255, 255, 0.12); color: #c8e6c9; font-size: 13px; }
+      .btn-equal { 
+            background: linear-gradient(135deg, #4caf50, #2e7d32); 
+            color: white; grid-column: span 2;
+      }
+      .mode-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
+      .mode-btn {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #a5d6a7; padding: 12px; border-radius: 16px; font-family: 'Poppins';
+            cursor: pointer; transition: all 0.3s ease; font-weight: 600; font-size: 14px;
+      }
+      .mode-btn.active,.mode-btn:hover {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(46, 125, 50, 0.4));
+            border-color: #4caf50; box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+      }
+      .steps {
+            background: rgba(0, 0, 0, 0.3); border-radius: 14px; padding: 15px;
+            margin-top: 15px; font-size: 14px; line-height: 1.6; 
+            border: 1px dashed rgba(76, 175, 80, 0.3); display: none;
+            font-family: 'Space Mono', monospace;
+      }
+      .label { font-weight: 600; color: #a5d6a7; margin: 15px 0 5px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="glass">
+        <h1>CALC <span class="neon-green">95LPA</span></h1>
+        <p style="text-align:center;">// Scientific + Calculus + Step-by-Step | Dark Green AI //</p>
+
+        <span class="label">Mode:</span>
+        <div class="mode-grid">
+            <button class="mode-btn active" data-mode="calc">🧮 Basic</button>
+            <button class="mode-btn" data-mode="deriv">∂ Derivative</button>
+            <button class="mode-btn" data-mode="integ">∫ Integral</button>
+        </div>
+
+        <div class="display">
+            <input type="text" id="input" placeholder="Enter expression: x^2 + 2*x" value="x^2 + sin(x)">
+            <div class="result" id="result">Ready...</div>
+        </div>
+
+        <div class="btn-grid">
+            <button class="btn btn-func" onclick="insert('sin(')">sin</button>
+            <button class="btn btn-func" onclick="insert('cos(')">cos</button>
+            <button class="btn btn-func" onclick="insert('tan(')">tan</button>
+            <button class="btn btn-func" onclick="insert('log(')">log</button>
+            <button class="btn btn-func" onclick="insert('sqrt(')">√</button>
+            
+            <button class="btn btn-func" onclick="insert('diff(')">d/dx</button>
+            <button class="btn btn-func" onclick="insert('integrate(')">∫dx</button>
+            <button class="btn btn-func" onclick="insert('pi')">π</button>
+            <button class="btn btn-func" onclick="insert('e')">e</button>
+            <button class="btn btn-func" onclick="insert('^')">^</button>
+
+            <button class="btn" onclick="insert('7')">7</button>
+            <button class="btn" onclick="insert('8')">8</button>
+            <button class="btn" onclick="insert('9')">9</button>
+            <button class="btn btn-op" onclick="insert('/')">/</button>
+            <button class="btn btn-op" onclick="insert('(')">(</button>
+
+            <button class="btn" onclick="insert('4')">4</button>
+            <button class="btn" onclick="insert('5')">5</button>
+            <button class="btn" onclick="insert('6')">6</button>
+            <button class="btn btn-op" onclick="insert('*')">×</button>
+            <button class="btn btn-op" onclick="insert(')')">)</button>
+
+            <button class="btn" onclick="insert('1')">1</button>
+            <button class="btn" onclick="insert('2')">2</button>
+            <button class="btn" onclick="insert('3')">3</button>
+            <button class="btn btn-op" onclick="insert('-')">-</button>
+            <button class="btn btn-op" onclick="insert('x')">x</button>
+
+            <button class="btn" onclick="insert('0')">0</button>
+            <button class="btn" onclick="insert('.')">.</button>
+            <button class="btn btn-op" onclick="clearInput()">C</button>
+            <button class="btn btn-op" onclick="insert('+')">+</button>
+            <button class="btn btn-equal" onclick="calculate()">=</button>
+        </div>
+
+        <div class="steps" id="steps"></div>
+    </div>
+
+    <script>
+        // 95 LPA System Design: Client-side Math Engine
+        let currentMode = 'calc';
+        const input = document.getElementById('input');
+        const result = document.getElementById('result');
+        const steps = document.getElementById('steps');
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMode = btn.dataset.mode;
+                result.textContent = 'Ready...';
+                steps.style.display = 'none';
+            };
+        });
+
+        function insert(val) {
+            input.value += val;
+            input.focus();
+        }
+
+        function clearInput() {
+            input.value = '';
+            result.textContent = 'Ready...';
+            steps.style.display = 'none';
+        }
+
+        function calculate() {
+            const expr = input.value.trim();
+            if (!expr) return;
+
+            try {
+                let res, stepsText = '';
+                
+                if (currentMode === 'calc') {
+                    // Basic calculation using math.js
+                    res = math.evaluate(expr);
+                    result.textContent = res;
+                    steps.style.display = 'none';
+                } 
+                else if (currentMode === 'deriv') {
+                    // Derivative using nerdamer
+                    const derivative = nerdamer(`diff(${expr}, x)`);
+                    res = derivative.toString();
+                    stepsText = `∂/∂x [${expr}] = ${res}`;
+                    result.textContent = res;
+                    steps.innerHTML = stepsText;
+                    steps.style.display = 'block';
+                }
+                else if (currentMode === 'integ') {
+                    // Integral using nerdamer
+                    const integral = nerdamer(`integrate(${expr}, x)`);
+                    res = integral.toString() + ' + C';
+                    stepsText = `∫ ${expr} dx = ${integral.toString()} + C`;
+                    result.textContent = res;
+                    steps.innerHTML = stepsText;
+                    steps.style.display = 'block';
+                }
+                
+                console.log(`95LPA Calc: Mode=${currentMode}, Expr=${expr}, Result=${res}`);
+                
+            } catch (err) {
+                result.textContent = 'Error: Invalid expression';
+                steps.style.display = 'none';
+                console.error('95LPA Calc Error:', err);
+            }
+        }
+
+        // Enter key = calculate
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+
+        // Auto-calculate on load
+        window.onload = () => calculate();
+    </script>
+</body>
+</html>
